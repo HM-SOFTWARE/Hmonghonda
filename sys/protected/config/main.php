@@ -96,13 +96,6 @@ return array(
             'password' => '',
             'charset' => 'utf8',
         ),
-        /* 'db' => array(
-          'connectionString' => 'mysql:host=localhost;dbname=fajtimye_hmdb',
-          'emulatePrepare' => true,
-          'username' => 'fajtimye_user',
-          'password' => 'da123!@#',
-          'charset' => 'utf8',
-          ), */
         'authManager' => array(
             'class' => 'application.modules.srbac.components.SDbAuthManager',
             'connectionID' => 'db',
