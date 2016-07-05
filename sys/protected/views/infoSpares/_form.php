@@ -96,12 +96,19 @@ if (!Yii::app()->user->checkAccess('User')) {
         ));
         echo $form->error($model, 'date_in', array('style' => "color:red;"));
         ?>
-
     </div>
     <div class="col-md-4"><?php echo $form->dropDownListControlGroup($model, 'car_or_spare_status_id', CHtml::listData(CarOrSpareStatus::model()->findAll('id!=3'), 'id', 'status'), array('id' => "dropdown", 'empty' => '=== ເລືອກ​ສະ​ຖາ​ນະ ===')); ?></div>
     <div class="col-md-4 box1 2"><?php echo $form->dropDownListControlGroup($model, 'branch_from_share', CHtml::listData(Branch::model()->findAll(), 'id', 'branch_name'), array('empty' => '=== ເລືອກ​ສາ​ຂາ ===')); ?> <span style="color: red;"><?php echo Yii::app()->user->getFlash('error'); ?></span></div>
-    <div class="col-md-4  ">
+    <div class="col-md-4 ">
         <?php echo $form->textFieldControlGroup($model, 'number_come', array('maxlength' => 45)); ?>
+    </div>
+    <div class="col-md-4 ">
+        <b>ແກ້​ໄຂອາ​ໄຫຼ່​ເກົ່າ/ເພີ່ມ​ຈຳ​ນວນ​ອາ​ໄຫຼ່​ເຂົ້າ​ໃໝ່</b>
+        <select name="insert_last" required class="form-control">
+            <option ></option>
+            <option value="0">ແກ້​ໄຂອາ​ໄຫຼ່​</option>
+            <option value="1">ເພີ່ມ​ຈຳ​ນວນ​ອາ​ໄຫຼ່​ເຂົ້າ</option>
+        </select>
     </div>
 </div>
 
