@@ -190,6 +190,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     <th style="white-space: nowrap">​​ລະ​ຫັດ​ອາ​ໄຫຼ່</th>
                     <th style="white-space: nowrap">​​ຊື່​ອາ​ໄຫຼ່</th>
                     <th style="white-space: nowrap">​​ຕຳ​ແໜ່ງອາ​ໄຫຼ່</th>
+                    <th style="white-space: nowrap">ລາ​ຄາ​ອາ​ໄຫຼ່</th>
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ຄ້າງ</th>
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ເຂົ້າ​ໃໝ່</th>
                     <th style="white-space: nowrap">ລວ​ມກັນ</th>
@@ -215,7 +216,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 foreach ($branch as $branchs) {
                     ?>
                     <tr>
-                        <td colspan="12" style="background-color: #FFF6BF"><b><?= $branchs->branch_name ?></b></td>
+                        <td colspan="13" style="background-color: #FFF6BF"><b><?= $branchs->branch_name ?></b></td>
                     </tr>
                     <?php
                     $criteria = new CDbCriteria(
@@ -258,6 +259,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                             <td data-toggle="tooltip" title="​​ລະ​ຫັດ​ອາ​ໄຫຼ່"><?= $spare->spare_code ?></td>
                             <td data-toggle="tooltip" title="​​ຊື່​ອາ​ໄຫຼ່"><?= $spare->spare_name ?></td>
                             <td data-toggle="tooltip" title="​​ຕຳ​ແໜ່ງອາ​ໄຫຼ່"><?= $spare->sparePosition->name ?></td>
+                            <td data-toggle="tooltip" title="ລາ​ຄາ​ອາ​ໄຫຼ່"><?= number_format($spare->spare_price_sale, 2) ?></td>
                             <td data-toggle="tooltip" title="ອາ​ໄຫ​ຼ່​ຄ້າງ">
                                 <?php
                                 $last_spare = LastOldSpares::model()->findByAttributes(array('info_spares_id' => $spare->id));
@@ -290,7 +292,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     }
                     ?>
                     <tr>
-                        <td colspan="5" align="right"><b>ລວ​ມ​ຈຳ​ນວນ</b></td>
+                        <td colspan="6" align="right"><b>ລວ​ມ​ຈຳ​ນວນ</b></td>
                         <td>​<b><?= $total_old_q ?></b></td>
                         <td>​<b><?= $total_last_q ?></b></td>
                         <td>​<b><?= $total ?></b></td>
