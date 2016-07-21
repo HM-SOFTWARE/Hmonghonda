@@ -79,6 +79,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 <th style="white-space: nowrap">​ປະ​ເພດ​ລົດ</th>
                 <th style="white-space: nowrap">​ເລກ​ຈັກ</th>
                 <th style="white-space: nowrap">ເລ​ກ​ຖັງ</th>
+                <th style="white-space: nowrap">ລຸ້ນ​ລົດ</th>
                 <th style="white-space: nowrap">​ສີ​ລົດ</th>
                 <th style="white-space: nowrap">​ຈຳ​ນວນ</th>
                 <th style="white-space: nowrap">ວັນ​ທີແຈ້ງສັບສີນ</th>
@@ -114,7 +115,8 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
 
                 $criteria->compare('t.branch_id', $branchs->id);
                 if (isset($_POST['date_start']) && $_POST['date_end']) {
-                    $criteria->addBetweenCondition('date_out', @$_POST['date_start'], @$_POST['date_end']);
+                    //$criteria->addBetweenCondition('date_out', @$_POST['date_start'], @$_POST['date_end']);
+                    $criteria->addBetweenCondition('date_placars', @$_POST['date_start'], @$_POST['date_end']);
                 }
                 $criteria->compare('car_or_spare_status_id', 3);
                 $criteria->compare('car_code_1', @$_POST['car_code']);
@@ -152,6 +154,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                             <td><?= $car->carType->type_name ?></td>
                             <td><?= $car->car_code_1 ?></td>
                             <td><?= $car->car_code_2 ?></td>
+                            <td><?= $car->generation ?></td>
                             <td><?= $car->color ?></td>
                             <td>1</td>
                             <td>
@@ -189,7 +192,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     }
                     ?>
                     <tr>
-                        <td colspan="5"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
+                        <td colspan="6"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
                         <td><?= $i ?></td>
                         <td></td>
                         <td><b><?= number_format($total_note, 2) ?></b></td>

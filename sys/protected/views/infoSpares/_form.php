@@ -39,7 +39,7 @@ if (!Yii::app()->user->checkAccess('User')) {
         <?php echo $form->textFieldControlGroup($model, 'spare_price_sale', array('id' => 'sale')); ?>
         <script type="text/javascript">$("#sale").maskMoney();</script>
     </div>
-    <div class="col-md-4"><?php echo $form->textFieldControlGroup($model, 'qautity'); ?></div>
+    <div class="col-md-4"><?php echo $form->textFieldControlGroup($model, 'qautity', array('readonly' => empty($model->id) ? false : true)); ?></div>
 </div>
 <div class="row">
     <div class="col-md-4">
@@ -101,14 +101,6 @@ if (!Yii::app()->user->checkAccess('User')) {
     <div class="col-md-4 box1 2"><?php echo $form->dropDownListControlGroup($model, 'branch_from_share', CHtml::listData(Branch::model()->findAll(), 'id', 'branch_name'), array('empty' => '=== ເລືອກ​ສາ​ຂາ ===')); ?> <span style="color: red;"><?php echo Yii::app()->user->getFlash('error'); ?></span></div>
     <div class="col-md-4 ">
         <?php echo $form->textFieldControlGroup($model, 'number_come', array('maxlength' => 45)); ?>
-    </div>
-    <div class="col-md-4 ">
-        <b>ແກ້​ໄຂອາ​ໄຫຼ່​ເກົ່າ/ເພີ່ມ​ຈຳ​ນວນ​ອາ​ໄຫຼ່​ເຂົ້າ​ໃໝ່</b>
-        <select name="insert_last" required class="form-control">
-            <option ></option>
-            <option value="0">ແກ້​ໄຂອາ​ໄຫຼ່​</option>
-            <option value="1">ເພີ່ມ​ຈຳ​ນວນ​ອາ​ໄຫຼ່​ເຂົ້າ</option>
-        </select>
     </div>
 </div>
 

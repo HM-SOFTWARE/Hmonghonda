@@ -13,6 +13,7 @@
  * @property integer $last_qautity
  * @property integer $old_qautity
  * @property integer $info_spares_id
+ * @property string $number_come_old
  *
  * @property InfoSpares $infoSpares
  */
@@ -31,15 +32,16 @@ abstract class BaseLastOldSpares extends GxActiveRecord {
 	}
 
 	public static function representingColumn() {
-		return 'id';
+		return 'number_come_old';
 	}
 
 	public function rules() {
 		return array(
 			array('info_spares_id', 'required'),
 			array('last_qautity, old_qautity, info_spares_id', 'numerical', 'integerOnly'=>true),
-			array('last_qautity, old_qautity', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, last_qautity, old_qautity, info_spares_id', 'safe', 'on'=>'search'),
+			array('number_come_old', 'length', 'max'=>45),
+			array('last_qautity, old_qautity, number_come_old', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, last_qautity, old_qautity, info_spares_id, number_come_old', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +62,7 @@ abstract class BaseLastOldSpares extends GxActiveRecord {
 			'last_qautity' => Yii::t('app', 'Last Qautity'),
 			'old_qautity' => Yii::t('app', 'Old Qautity'),
 			'info_spares_id' => null,
+			'number_come_old' => Yii::t('app', 'Number Come Old'),
 			'infoSpares' => null,
 		);
 	}
@@ -71,6 +74,7 @@ abstract class BaseLastOldSpares extends GxActiveRecord {
 		$criteria->compare('last_qautity', $this->last_qautity);
 		$criteria->compare('old_qautity', $this->old_qautity);
 		$criteria->compare('info_spares_id', $this->info_spares_id);
+		$criteria->compare('number_come_old', $this->number_come_old, true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,

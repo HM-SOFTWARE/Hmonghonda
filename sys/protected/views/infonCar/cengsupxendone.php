@@ -13,7 +13,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
     <div class="col-md-12" style=" border-bottom: 1px solid #b71113"><h1>​ລົດແຈ້ງສັບສີນແລ້ວ​</h1></div>
     &nbsp;
     <div class="row" >
-        <div class="col-md-6">
+        <div class="col-md-8">
             ຈາກວັນ​ທີ: 
             <?php
             $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -53,6 +53,12 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 ),
             ));
             ?>
+            ເລືອກ​
+            <select name="y_n" required>
+                <option value="">====== ເລືອກ ========</option>
+                <option value="1" <?= (@$_POST['y_n'] == 1) ? "selected" : "" ?>>ລົດແຈ້ງ​ຊັບ​ສີນ​ແລ້ວ​ຍັງ​ບໍ່​ໄດ້​ຂື້​ນ​ທະ​ບ່ຽນ</option>
+                <option value="2" <?= (@$_POST['y_n'] == 2) ? "selected" : "" ?>>​ທັງ​ໝົດ​ລົດ​ທີ່​ແຈ້ງ​ຊັບ​ສີນ​ແລ້ວ</option>
+            </select>
         </div>
     </div>
     <div class="row">
@@ -79,6 +85,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 <th style="white-space: nowrap">​ປະ​ເພດ​ລົດ</th>
                 <th style="white-space: nowrap">​ເລກ​ຈັກ</th>
                 <th style="white-space: nowrap">ເລ​ກ​ຖັງ</th>
+                <th style="white-space: nowrap">ລຸ້ນ​ລົດ</th>
                 <th style="white-space: nowrap">​ສີ​ລົດ</th>
                 <th style="white-space: nowrap">​ຈຳ​ນວນ</th>
                 <th style="white-space: nowrap">ວັນ​ທີແຈ້ງສັບສີນ</th>
@@ -87,7 +94,15 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 <th style="white-space: nowrap"></th>
             </tr>
             <?php
-            $placard = Placard::model()->findAll('date_note IS NOT NULL AND date_placars IS NULL');
+            if (isset($_POST['y_n'])) {
+                if ($_POST['y_n'] == 2) {
+                    $placard = Placard::model()->findAll('date_note IS NOT NULL');
+                } else {
+                    $placard = Placard::model()->findAll('date_note IS NOT NULL AND date_placars IS NULL');
+                }
+            } else {
+                $placard = Placard::model()->findAll('date_note IS NOT NULL AND date_placars IS NULL');
+            }
             $array = array();
             foreach ($placard as $placards) {
                 $array[] = $placards->infon_car_id;
@@ -112,7 +127,8 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
 
                 $criteria->compare('t.branch_id', $branchs->id);
                 if (isset($_POST['date_start']) && $_POST['date_end']) {
-                    $criteria->addBetweenCondition('date_out', @$_POST['date_start'], @$_POST['date_end']);
+                    //$criteria->addBetweenCondition('date_out', @$_POST['date_start'], @$_POST['date_end']);
+                    $criteria->addBetweenCondition('date_note', @$_POST['date_start'], @$_POST['date_end']);
                 }
                 $criteria->compare('car_or_spare_status_id', 3);
                 $criteria->compare('car_code_1', @$_POST['car_code']);
@@ -150,6 +166,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                             <td><?= $car->carType->type_name ?></td>
                             <td><?= $car->car_code_1 ?></td>
                             <td><?= $car->car_code_2 ?></td>
+                            <td><?= $car->generation ?></td>
                             <td><?= $car->color ?></td>
                             <td>1</td>
                             <td>
@@ -178,7 +195,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     }
                     ?>
                     <tr>
-                        <td colspan="5"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
+                        <td colspan="6"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
                         <td><?= $i ?></td>
                         <td></td>
                         <td><b><?= number_format($total_note, 2) ?></b></td>

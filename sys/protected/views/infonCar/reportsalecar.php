@@ -148,6 +148,7 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                 <th style="white-space: nowrap">ລາ​ຄາ​ທີ​ຍັງ​ເຫຼືອ</th>
                 <th style="white-space: nowrap">ຈ່າຍກ່ອນ</th>
                 <th style="white-space: nowrap">ຈ່າຍ​ແລ້ວ</th>
+                <th style="white-space: nowrap">ວັນ​ທີ່​ຊຳ​ລະລ່າສຸດ</th>
                 <th style="white-space: nowrap">​ຍັງ​ຄ້າງ</th>
                 <th style="white-space: nowrap">ປ້າຍ</th>
                 <th style="white-space: nowrap">ຊື່​ຜູ້​ຂາຍ</th>
@@ -184,7 +185,7 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                         ),
                         'together' => true,
                     ));
-                    if (empty($_POST['code_car1']) && empty($_POST['generation'])) {
+                    if (empty($_POST['code_car1'])) {
                         $criteria->addBetweenCondition('date_out', date('Y-m-d', strtotime($_POST['date_start'])), date('Y-m-d', strtotime($_POST['date_end'])));
                     }
                     $criteria->compare('t.branch_id', $branchs->id);
@@ -194,7 +195,7 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                         $criteria->compare('carSales.sale_status_id', $_POST['status_sale']);
                     }
                     $criteria->compare('car_code_1', $_POST['code_car1']);
-                    $criteria->compare('generation', $_POST['generation']);
+                    $criteria->compare('generation', $_POST['generation'], true);
                     $criteria->compare('car_or_spare_status_id', 3);
                     $criteria->order = 'date_out ASC';
                     $cars = InfonCar::model()->findAll($criteria);
@@ -304,7 +305,6 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                                         }
                                     }
                                     if ($car_sale_min->sale_status_id == 2) {
-
                                         $sume = $totalpaid - $car_sale_min->paid;
                                     } else {
                                         $sume = $totalpaid - $discount_price;
@@ -312,6 +312,17 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                                     if ($car_sale_min->sale_status_id == 2) {
                                         echo number_format($sume, 2);
                                         $totalpaid_all+=$sume;
+                                    }
+                                    ?>
+                                </td>
+                                <td style="white-space: nowrap" data-toggle="tooltip" title="ວັນ​ທີ່​ຊຳ​ລະລ່າສຸດ">
+                                    <?php
+                                    $car_sale_minpaid = CarSale::model()->findByAttributes(array('infon_car_id' => $car->id, 'sale_status_id' => 2), array('order' => 'id ASC'));
+                                    $car_sale_maxpaid = CarSale::model()->findByAttributes(array('infon_car_id' => $car->id, 'sale_status_id' => 2), array('order' => 'id DESC'));
+                                    if (!empty($car_sale_minpaid)) {
+                                        if ($car_sale_minpaid->id != $car_sale_maxpaid->id) {
+                                            echo $car_sale_maxpaid->date;
+                                        }
                                     }
                                     ?>
                                 </td>
@@ -378,6 +389,7 @@ if (!isset($_POST['branch']) && !empty(Yii::app()->session['search'])) {
                             <td><b><?= number_format($total_ad, 2) ?></b></td>
                             <td><b><?= number_format($total_bpay, 2) ?></b></td>
                             <td ><b><?= number_format($totalpaid_all, 2) ?></b></td>
+                            <td></td>
                             <td colspan="4"><b><?php
                                     if ($totalnot_all > 0) {
                                         echo number_format($totalnot_all, 2);

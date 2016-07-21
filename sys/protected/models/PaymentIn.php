@@ -41,6 +41,7 @@ class PaymentIn extends BasePaymentIn
         $criteria->compare('branch_id', $this->branch_id);
         $criteria->compare('status', $this->status, true);
         $criteria->compare('cus_id', $this->cus_id);
+        // $criteria->addCondition('cus_id IS NULL'); // disable list pay supsin, kheuthabian
         $criteria->compare('sp', $this->sp);
         $criteria->compare('car_id', $this->car_id);
         $criteria->order = 'id DESC';

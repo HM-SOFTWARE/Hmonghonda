@@ -156,6 +156,28 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
             ),
         ));
         ?>
+        ເລກ​ທີ່​ນຳ​ເຂົ້າ
+        <?php
+        $arraytp = array();
+        $spt = InfoSpares::model()->findAll();
+        foreach ($spt as $spts) {
+            if (!in_array($spts->number_come, $arraytp)) {
+                $arraytp[] = $spts->number_come;
+            }
+        }
+        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+            'name' => 'number_come',
+            'value' => @$_POST['number_come'],
+            'source' => $arraytp,
+            // additional javascript options for the autocomplete plugin
+            'options' => array(
+                'minLength' => '1',
+            ),
+            'htmlOptions' => array(
+            // 'style' => 'height:20px;',
+            ),
+        ));
+        ?>
     </div>
 </div>
 <div class="row" style="padding-top: 10px">
@@ -186,6 +208,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
             <thead>
                 <tr  style="background-color: #0063dc">
                     <th style="white-space: nowrap">ວັນ​ທີ​ນຳ​ເຂົ້າໃໝ່</th>
+                    <th style="white-space: nowrap"> ເລກ​ທີ່​ນຳ​ເຂົ້າ</th>
                     <th style="white-space: nowrap">ປະ​ເພດ​ອາ​ໄຫຼ່</th>
                     <th style="white-space: nowrap">​​ລະ​ຫັດ​ອາ​ໄຫຼ່</th>
                     <th style="white-space: nowrap">​​ຊື່​ອາ​ໄຫຼ່</th>
@@ -194,6 +217,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ຄ້າງ</th>
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ເຂົ້າ​ໃໝ່</th>
                     <th style="white-space: nowrap">ລວ​ມກັນ</th>
+                    <th style="white-space: nowrap">ອາ​ໄຫຼ່​ໂອນ​ໃຫ້​ສາ​ຂ​າ</th>
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ທີ່​ຂາຍ​ແລ້ວ</th>
                     <th style="white-space: nowrap">ເປັນ​ເງີນ</th>
                     <th style="white-space: nowrap">ອາ​ໄຫ​ຼ່​ທີ​ຍັງ​ເຫຼືອ</th>
@@ -216,7 +240,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 foreach ($branch as $branchs) {
                     ?>
                     <tr>
-                        <td colspan="13" style="background-color: #FFF6BF"><b><?= $branchs->branch_name ?></b></td>
+                        <td colspan="15" style="background-color: #FFF6BF"><b><?= $branchs->branch_name ?></b></td>
                     </tr>
                     <?php
                     $criteria = new CDbCriteria(
@@ -237,12 +261,15 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     if (isset($_POST['code_spares']) && !empty($_POST['code_spares'])) {
                         $criteria->compare('t.spare_code', @$_POST['code_spares'], true);
                     }
-
+                    if (isset($_POST['number_come']) && !empty($_POST['number_come'])) {
+                        $criteria->compare('t.number_come', @$_POST['number_come'], true);
+                    }
                     if (isset($_POST['type_spares']) && !empty($_POST['type_spares'])) {
                         $criteria->compare('t.type_spares', @$_POST['type_spares'], true);
                     }
                     $spares = InfoSpares::model()->findAll($criteria);
                     $total = 0;
+                    $total_sale_transfer = 0;
                     $total_sale = 0;
                     $total_yet = 0;
                     $total_paid = 0;
@@ -250,11 +277,13 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     $total_old_q = 0;
                     $total_last_q = 0;
                     foreach ($spares as $spare) {
-                        $sale_spare = Yii::app()->db->createCommand('SELECT SUM(qautity) FROM sale_spares WHERE info_spares_id=' . $spare->id . '')->queryScalar();
-                        $sale_paid = Yii::app()->db->createCommand('SELECT SUM(paid) FROM sale_spares WHERE info_spares_id=' . $spare->id . '')->queryScalar();
+                        $sale_spare = Yii::app()->db->createCommand('SELECT SUM(qautity) FROM sale_spares WHERE info_spares_id=' . $spare->id . ' and sale_status_id=1 || sale_status_id=2')->queryScalar();
+                        $sale_paid = Yii::app()->db->createCommand('SELECT SUM(paid) FROM sale_spares WHERE info_spares_id=' . $spare->id . ' and sale_status_id=1 || sale_status_id=2')->queryScalar();
+                        $sale_transfer_branch = Yii::app()->db->createCommand('SELECT SUM(qautity) FROM sale_spares WHERE info_spares_id=' . $spare->id . ' and sale_status_id=4')->queryScalar();
                         ?>
                         <tr>
                             <td data-toggle="tooltip" title="ວັນ​ທີ​ນຳ​ເຂົ້າໃໝ່"><?= $spare->date_in ?></td>
+                            <td data-toggle="tooltip" title=" ເລກ​ທີ່​ນຳ​ເຂົ້າ"><?= $spare->number_come ?></td>
                             <td data-toggle="tooltip" title="ປະ​ເພດ​ອາ​ໄຫຼ່"><?= $spare->type_spares ?></td>
                             <td data-toggle="tooltip" title="​​ລະ​ຫັດ​ອາ​ໄຫຼ່"><?= $spare->spare_code ?></td>
                             <td data-toggle="tooltip" title="​​ຊື່​ອາ​ໄຫຼ່"><?= $spare->spare_name ?></td>
@@ -276,7 +305,8 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                             </td>
                             <td data-toggle="tooltip" title="ອາ​ໄຫ​ຼ່​ເຂົ້າ​ໃໝ່"><?= $last_q - $old_q ?></td>
                             <td data-toggle="tooltip" title="ລວມ​ກັນ"><?= $last_q ?></td>
-                            <td data-toggle="tooltip" title="ອາ​ໄຫ​ຼ່​ທີ່​ຂາຍ​ແລ້ວ"><?= $sale_spare ?></td>
+                            <td data-toggle="tooltip" title="ລວມ​ກັນ"><?= $sale_transfer_branch ?></td>
+                            <td data-toggle="tooltip" title="ອາ​ໄຫຼ່​ໂອນ​ໃຫ້​ສາ​ຂ​າ"><?= $sale_spare ?></td>
                             <td data-toggle="tooltip" title="ເປັ​ນ​ເງີນ"><?= number_format($sale_paid, 2) ?></td>
                             <td data-toggle="tooltip" title="ອາ​ໄຫ​ຼ່​ທີ​ຍັງ​ເຫຼືອ"><?= $spare->qautity ?></td>
                             <td data-toggle="tooltip" title="ເປັ​ນ​ເງີນ"><?= number_format($spare->qautity * $spare->spare_price_sale, 2) ?></td>
@@ -286,16 +316,18 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                         $total_old_q+=$old_q;
                         $total_last_q+=$last_q - $old_q;
                         $total_sale+=$sale_spare;
+                        $total_sale_transfer+=$sale_transfer_branch;
                         $total_yet+=$spare->qautity;
                         $total_paid+=$sale_paid;
                         $total_price+=$spare->qautity * $spare->spare_price_sale;
                     }
                     ?>
                     <tr>
-                        <td colspan="6" align="right"><b>ລວ​ມ​ຈຳ​ນວນ</b></td>
+                        <td colspan="7" align="right"><b>ລວ​ມ​ຈຳ​ນວນ</b></td>
                         <td>​<b><?= $total_old_q ?></b></td>
                         <td>​<b><?= $total_last_q ?></b></td>
                         <td>​<b><?= $total ?></b></td>
+                        <td>​<b><?= $total_sale_transfer ?></b></td>
                         <td><b><?= $total_sale ?></b></td>
                         <td><b><?= number_format($total_paid, 2) ?></b></td>
                         <td><b><?= $total_yet ?></b></td>

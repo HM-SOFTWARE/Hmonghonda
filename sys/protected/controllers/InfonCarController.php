@@ -80,10 +80,18 @@ class InfonCarController extends Controller
                 $model->date_placars = date('Y-m-d', strtotime($_POST['Placard']['date_placars']));
             }
             if (isset($_POST['Placard']['pay_note'])) {
-                $model->pay_note = substr(preg_replace("/[^0-9]/", "", $_POST['Placard']['pay_note']), 0, -2);
+                if (is_numeric($_POST['Placard']['pay_note'])) {
+                    $model->pay_note = $_POST['Placard']['pay_note'];
+                } else {
+                    $model->pay_note = substr(preg_replace("/[^0-9]/", "", $_POST['Placard']['pay_note']), 0, -2);
+                }
             }
             if (isset($_POST['Placard']['pay_placar'])) {
-                $model->pay_placar = substr(preg_replace("/[^0-9]/", "", $_POST['Placard']['pay_placar']), 0, -2);
+                if (is_numeric($_POST['Placard']['pay_placar'])) {
+                    $model->pay_placar = $_POST['Placard']['pay_placar'];
+                } else {
+                    $model->pay_placar = substr(preg_replace("/[^0-9]/", "", $_POST['Placard']['pay_placar']), 0, -2);
+                }
             }
 
             if ((int) ($model->pay_note) <= 0) {
@@ -814,8 +822,7 @@ class InfonCarController extends Controller
             unset(Yii::app()->session['code_car1']);
             unset(Yii::app()->session['generation']);
         }
-        $this->render('reportsalecar'
-        );
+        $this->render('reportsalecar');
     }
 
     public function actionReportshare()

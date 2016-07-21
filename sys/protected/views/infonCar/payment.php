@@ -64,6 +64,7 @@ $this->layout = NULL;
                                 <?= "ຍີ່​ຫໍ້ " . $lists->infonCar->brand ?><br/>
                                 <?= "ສີ " . $lists->infonCar->color ?><br/>
                                 <?= "ອັດ​ຕາ​ດອກ​ເບ້ຍ " . $lists->interest ?><br/>
+                                <?= "ຊື່​ລູກ​ຄ້າ " . $lists->customer->first_name . " " . $lists->customer->last_name ?><br/>
                                 <?php
                             }
                             ?>
@@ -122,6 +123,14 @@ $this->layout = NULL;
                         </td>
                         <td>
                             <?= date('d/m/Y', strtotime($lists->date)) ?>
+                            <?php
+                            if ($cus > 1) {
+                                ?>
+                                <br/>
+                                <?= ($lists->type_paid == 'Cash') ? 'ຈ່າຍ​ສົດ' : 'ໂອນ​ເຂົ້າ​ບັນ​ຊີ' ?>
+                                <?php
+                            }
+                            ?>
                         </td>
                     </tr>
                     <?php

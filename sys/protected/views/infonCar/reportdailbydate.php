@@ -152,16 +152,24 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     <td data-toggle="tooltip" title="ວັນ​ທີ"><?= date('Y-m-d', $i) ?></td>
                     <td data-toggle="tooltip" title="ລາຍ​ຮັບ​ລວມ">
                         <?php
-                        $command_recieve = Yii::app()->db->createCommand('SELECT SUM(paid) FROM car_sale WHERE date="' . $date_loop . '" and branch_id=' . $branchs->id . ' and sale_status_id IN(1,2)')->queryScalar();
-                        // $command_recieve_pares = Yii::app()->db->createCommand('SELECT SUM(paid) FROM sale_spares WHERE date="' . $date_loop . '" and branch_id=' . $branchs->id . ' and sale_status_id IN(1)')->queryScalar();
-                        $command_recieve_pares = 0;
-                        $command_recieve_debts = Yii::app()->db->createCommand('SELECT DISTINCT customer_id FROM sale_spares WHERE date="' . $date_loop . '" and branch_id=' . $branchs->id . ' and sale_status_id IN(2)')->queryAll();
-                        $command_recieve_d = 0;
-                        foreach ($command_recieve_debts as $command_recieve_debt) {
-                            $command_recieve_d+= Yii::app()->db->createCommand('SELECT SUM(price) FROM paybefore WHERE customer_id=' . $command_recieve_debt['customer_id'] . '')->queryScalar();
+                        $command_recieve_sale_car_cash = Yii::app()->db->createCommand('SELECT SUM(paid) FROM car_sale WHERE date="' . $date_loop . '" and branch_id=' . $branchs->id . ' and sale_status_id IN(1)')->queryScalar();
+                        $command_car_discounts = Yii::app()->db->createCommand('SELECT DISTINCT customer_id FROM car_sale LEFT JOIN infon_car ON car_sale.infon_car_id=infon_car.id WHERE infon_car.date_out="' . $date_loop . '" and car_sale.branch_id=' . $branchs->id . ' and car_sale.sale_status_id IN(1,2)')->queryAll();
+                        $command_discount_car_price = 0;
+                        $command_recieve_sale_car_doa = 0;
+                        foreach ($command_car_discounts as $command_car_discount) {
+                            $command_recieve_sale_car_doa+= Yii::app()->db->createCommand('SELECT SUM(paid) FROM depts_month_pay WHERE customer_id="' . $command_car_discount['customer_id'] . '"')->queryScalar();
+                            $min_id = Yii::app()->db->createCommand('SELECT id FROM car_sale WHERE customer_id="' . $command_car_discount['customer_id'] . '" and date<="' . $date_loop . '"')->queryAll();
+                            $max_id = Yii::app()->db->createCommand('SELECT MAX(id) FROM car_sale WHERE customer_id="' . $command_car_discount['customer_id'] . '"')->queryScalar();
+                            if (count($min_id) <= 1) { /// for sale have discount
+                                $command_discount_car_price+= Yii::app()->db->createCommand('SELECT SUM(discount) FROM discount WHERE customer_id=' . $command_car_discount['customer_id'] . '')->queryScalar();
+                            }
                         }
-                        echo number_format(($command_recieve + $command_recieve_pares + $command_recieve_d), 2);
-                        $total_recived+=$command_recieve + $command_recieve_pares + $command_recieve_d;
+                        $recieve = ($command_recieve_sale_car_cash + $command_recieve_sale_car_doa) - $command_discount_car_price;
+                        //  echo $command_recieve_sale_car_doa . "<br/>";
+                        // echo $command_recieve_sale_car_cash . "<br/>";
+                        //echo $command_recieve_sale_car_doa . "<br/>";
+                        echo number_format(($recieve), 2);
+                        $total_recived+=$recieve;
                         ?>
                     </td>
                     <td data-toggle="tooltip" title="​ລາຍ​ຈ່າຍ​ລວມ">
@@ -172,29 +180,43 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                         ?>
                     </td>
                     <td data-toggle="tooltip" title="​ລາ​ຍ​ຮັບສຸດ​ທີ">
-                        <?= number_format(($command_recieve + $command_recieve_pares + $command_recieve_d) - $command_payout, 2) ?>
                         <?php
-                        $total_recived_max+=($command_recieve + $command_recieve_pares + $command_recieve_d) - $command_payout;
+                        $recived_max = $recieve - $command_payout;
+                        ?>
+                        <?= number_format($recived_max, 2) ?>
+                        <?php
+                        $total_recived_max+=$recived_max;
                         ?>
                     </td>
                     <td data-toggle="tooltip" title="ໝີ້​ຕ້ອງ​ຮັ​ບ">
                         <?php
-                        $dept_paymoth = Yii::app()->db->createCommand('SELECT depts_month_pay.paid FROM depts_month_pay LEFT JOIN infon_car ON depts_month_pay.infon_car_id=infon_car.id WHERE infon_car.branch_id=' . $branchs->id . ' and date_pay="' . $date_loop . '" and depts_month_pay.first_pay="N" and depts_month_pay.status="0"')->queryScalar();
-                        $total_nitonghup+=$dept_paymoth;
-                        echo number_format($dept_paymoth, 2);
+                        $command_car_dao = Yii::app()->db->createCommand('SELECT DISTINCT customer_id FROM car_sale LEFT JOIN infon_car ON car_sale.infon_car_id=infon_car.id WHERE infon_car.date_out="' . $date_loop . '" and car_sale.branch_id=' . $branchs->id . ' and car_sale.sale_status_id IN(2)')->queryAll();
+                        $nitonghup = 0;
+                        foreach ($command_car_dao as $command_car_daos) {
+                            $nitonghup+= Yii::app()->db->createCommand('SELECT SUM(paid) FROM depts_month_pay WHERE customer_id="' . $command_car_daos['customer_id'] . '" and first_pay="N" and status="0"')->queryScalar();
+                        }
+                        $total_nitonghup+=$nitonghup;
+                        echo number_format($nitonghup, 2);
                         ?>
                     </td>
                     <td data-toggle="tooltip" title="ໝີ້​ຈ່າຍ​ເຂົ້າ">
                         <?php
-                        $dept_paymoth_in = Yii::app()->db->createCommand('SELECT depts_month_pay.paid FROM depts_month_pay LEFT JOIN infon_car ON depts_month_pay.infon_car_id=infon_car.id WHERE infon_car.branch_id=' . $branchs->id . ' and date_pay="' . $date_loop . '" and depts_month_pay.first_pay="N" and depts_month_pay.status="1"')->queryScalar();
-                        $total_nitongpayin+=$dept_paymoth_in;
-                        echo number_format($dept_paymoth_in, 2);
+                        $command_car_dao = Yii::app()->db->createCommand('SELECT DISTINCT customer_id FROM car_sale LEFT JOIN infon_car ON car_sale.infon_car_id=infon_car.id WHERE infon_car.date_out="' . $date_loop . '" and car_sale.branch_id=' . $branchs->id . ' and car_sale.sale_status_id IN(2)')->queryAll();
+                        $nipayin = 0;
+                        foreach ($command_car_dao as $command_car_daos) {
+                            $nipayin+= Yii::app()->db->createCommand('SELECT SUM(paid) FROM depts_month_pay WHERE customer_id="' . $command_car_daos['customer_id'] . '" and first_pay="N" and status="1"')->queryScalar();
+                        }
+                        $total_nitongpayin+=$nipayin;
+                        echo number_format($nipayin, 2);
                         ?>
                     </td>
                     <td data-toggle="tooltip" title="​ເງີນ​ສົດ​ສຸດ​ທີ">
-                        <?= number_format((($command_recieve + $command_recieve_pares + $command_recieve_d) - $count_next - $command_payout), 2) ?>
                         <?php
-                        $total_real_recived+=(($command_recieve + $command_recieve_pares + $command_recieve_d) - $count_next - $command_payout);
+                        $real_recived = $recived_max - $nitonghup;
+                        ?>
+                        <?= number_format($real_recived, 2) ?>
+                        <?php
+                        $total_real_recived+=$real_recived;
                         ?>
                     </td>
                 </tr>

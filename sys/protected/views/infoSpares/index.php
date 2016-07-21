@@ -77,13 +77,13 @@ $this->menu = array(
             ),
             array(
                 'class' => 'bootstrap.widgets.BsButtonColumn',
-                'template' => '{quatity} {lock} {view} {update} {delete}',
+                'template' => '{quatity_old} {quatity_new} {lock} {view} {update} {delete}',
                 'buttons' => array(
                     'lock' => array(
                         'url' => 'Yii::app()->createUrl("infoSpares/lock", array("id"=>$data->id))',
                         'icon' => BsHtml::GLYPHICON_LOCK,
                         'options' => array(
-                            'class' => 'btn btn-success',
+                            'class' => 'btn btn-success btn-sm',
                         ),
                         'visible' => Yii::app()->user->checkAccess('Admin') ? '($data->status=="Approve")?true:false' : 'false'
                     ),
@@ -95,20 +95,34 @@ $this->menu = array(
                                 'url' => "js:$(this).attr('href')", // ajax post will use 'url' specified above
                                 'update' => '#view'
                             ),
-                            'class' => 'btn btn-primary',
+                            'class' => 'btn btn-primary btn-sm',
                         ),
                     ),
-                    'quatity' => array(
-                        'label' => 'ເພີ່ມ​ຈຳ​ນວນ',
-                        'icon' => BsHtml::GLYPHICON_FLAG,
-                        'url' => 'Yii::app()->createUrl("infoSpares/qtt", array("id"=>$data->id))',
+                    'quatity_old' => array(
+                        'label' => 'ແກ້​ໄຂຈຳ​ນວນປ້ອນ​ຜິດ',
+                        'icon' => BsHtml::GLYPHICON_BRIEFCASE,
+                        'url' => 'Yii::app()->createUrl("infoSpares/qtt", array("id"=>$data->id,insert_last=>0))',
                         'options' => array(
                             'ajax' => array(
                                 'type' => 'POST',
                                 'url' => "js:$(this).attr('href')", // ajax post will use 'url' specified above
                                 'update' => '#view'
                             ),
-                            'class' => 'btn btn-success',
+                            'class' => 'btn btn-danger btn-sm',
+                        ),
+                        'visible' => Yii::app()->user->checkAccess('Admin') ? 'true' : 'false',
+                    ),
+                    'quatity_new' => array(
+                        'label' => 'ເພີ່ມ​ຈຳ​ນວນເຂົ້າ​ໃໜ່',
+                        'icon' => BsHtml::GLYPHICON_FLAG,
+                        'url' => 'Yii::app()->createUrl("infoSpares/qtt", array("id"=>$data->id,insert_last=>1))',
+                        'options' => array(
+                            'ajax' => array(
+                                'type' => 'POST',
+                                'url' => "js:$(this).attr('href')", // ajax post will use 'url' specified above
+                                'update' => '#view'
+                            ),
+                            'class' => 'btn btn-success btn-sm',
                         ),
                         'visible' => Yii::app()->user->checkAccess('Admin') ? 'false' : 'true',
                     ),
@@ -116,7 +130,7 @@ $this->menu = array(
                         'label' => 'ແກ​້​ໄຂ',
                         // 'url' => 'Yii::app()->createUrl("users/email", array("id"=>$data->id))',
                         'options' => array(
-                            'class' => 'btn btn-success',
+                            'class' => 'btn btn-success btn-sm',
                         ),
                         'visible' => Yii::app()->user->checkAccess('Admin') ? 'true' : '($data->status=="Pending")?true:false'
                     ),
@@ -124,12 +138,12 @@ $this->menu = array(
                         // 'url' => 'Yii::app()->createUrl("users/email", array("id"=>$data->id))',
                         'label' => 'ລຶບ​ອອກ',
                         'options' => array(
-                            'class' => 'btn btn-danger',
+                            'class' => 'btn btn-danger btn-sm',
                         ),
                         'visible' => Yii::app()->user->checkAccess('Admin') ? 'true' : '($data->status=="Pending")?true:false'
                     ),
                 ),
-                'htmlOptions' => array('width' => 200, 'align' => 'right'),
+                'htmlOptions' => array('width' => 220, 'align' => 'right'),
             ),
         ),
     ));

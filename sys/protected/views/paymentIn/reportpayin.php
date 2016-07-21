@@ -116,6 +116,7 @@ if (!isset($_POST['date_start']) && !isset($_POST['date_end'])) {
                 ));
                 $criteria->addBetweenCondition('date', date('Y-m-d', strtotime($_POST['date_start'])), date('Y-m-d', strtotime($_POST['date_end'])));
                 $criteria->compare('t.branch_id', $branchs->id);
+                $criteria->addCondition('cus_id IS NULL'); // disable list pay supsin, kheuthabian
                 $criteria->order = 'date ASC';
                 $payins = PaymentIn::model()->findAll($criteria);
                 $total = 0;

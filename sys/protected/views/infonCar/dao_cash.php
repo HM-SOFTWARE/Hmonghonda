@@ -102,7 +102,7 @@ if (!isset($_POST['date_start']) && !isset($_POST['date_end'])) {
 <div class="table-responsive" > 
     <table class="table table-bordered " id="pdf_export" >
         <tr> 
-            <th style="white-space: nowrap">ວັນ​ທີ</th>
+            <th style="white-space: nowrap">ວັນ​ທີcc</th>
             <th style="white-space: nowrap">ຊື່​ລູກ​ຄ້າ</th>
             <th style="white-space: nowrap">ເລກ​ຈັກ</th>
             <th style="white-space: nowrap">ເລກ​ຖັງ</th>
@@ -117,19 +117,16 @@ if (!isset($_POST['date_start']) && !isset($_POST['date_end'])) {
             }
             $total_all = 0;
             foreach ($branch as $branchs) {
-                $criteria = new CDbCriteria(
-                        array(
-                    'with' => array(
-                        'branch',
-                    ),
-                    'together' => true,
-                ));
+                $criteria = new CDbCriteria();
                 $criteria->addBetweenCondition('date', date('Y-m-d', strtotime($_POST['date_start'])), date('Y-m-d', strtotime($_POST['date_end'])));
                 $criteria->compare('t.branch_id', $branchs->id);
                 $criteria->compare('t.sale_status_id', 2);
                 $criteria->compare('type_paid', "Cash");
+                //  $criteria->compare('interest', NULL);
+                $criteria->addCondition('interest IS NULL');
                 $criteria->order = 'date ASC';
                 $carsales = CarSale::model()->findAll($criteria);
+
                 $total = 0;
                 $last_paiddao = array();
                 if (count($carsales) > 0) {
@@ -139,26 +136,26 @@ if (!isset($_POST['date_start']) && !isset($_POST['date_end'])) {
                     </tr>
                     <?php
                     foreach ($carsales as $carsale) {
-                        if (!in_array($carsale->infon_car_id, $last_paiddao)) {
-                            $last_paiddao[] = $carsale->infon_car_id;
-                        } else {
-                            $total+=$carsale->paid;
-                            ?>
-                            <tr>
-                                <td style="white-space: nowrap" data-toggle="tooltip" title="ວັນ​ທີ"><?= $carsale->date ?></td>
-                                <td style="white-space: nowrap" data-toggle="tooltip" title="ຊື່​ລູກ​ຄ້າ">
 
-                                    <?php
-                                    echo 'ລະ​ຫັດ:' . sprintf('%06d', $carsale->customer->id) . '<br/>';
-                                    echo $carsale->customer->first_name;
-                                    ?>
-                                </td>
-                                <td data-toggle="tooltip" title="ເລກ​ຈັກ" style="white-space: nowrap"><?= $carsale->infonCar->car_code_1 ?></td>
-                                <td data-toggle="tooltip" title="ເລກ​ຖັງ" style="white-space: nowrap"><?= $carsale->infonCar->car_code_2 ?></td>
-                                <td data-toggle="tooltip" title="ຈຳ​ນວນ​ເງີນ" style="white-space: nowrap"><?= number_format($carsale->paid, 2) ?></td>
-                            </tr>
-                            <?php
-                        }
+                        // if (!in_array($carsale->infon_car_id, $last_paiddao)) {
+                        //   $last_paiddao[] = $carsale->infon_car_id;
+                        //  } else {
+                        $total+=$carsale->paid;
+                        ?>
+                        <tr>
+                            <td style="white-space: nowrap" data-toggle="tooltip" title="ວັນ​ທີ"><?= $carsale->date ?></td>
+                            <td style="white-space: nowrap" data-toggle="tooltip" title="ຊື່​ລູກ​ຄ້າ">
+                                <?php
+                                echo 'ລະ​ຫັດ:' . sprintf('%06d', $carsale->customer->id) . '<br/>';
+                                echo $carsale->customer->first_name;
+                                ?>
+                            </td>
+                            <td data-toggle="tooltip" title="ເລກ​ຈັກ" style="white-space: nowrap"><?= $carsale->infonCar->car_code_1 ?></td>
+                            <td data-toggle="tooltip" title="ເລກ​ຖັງ" style="white-space: nowrap"><?= $carsale->infonCar->car_code_2 ?></td>
+                            <td data-toggle="tooltip" title="ຈຳ​ນວນ​ເງີນ" style="white-space: nowrap"><?= number_format($carsale->paid, 2) ?></td>
+                        </tr>
+                        <?php
+                        // }
                     }
                     ?>
                     <tr>

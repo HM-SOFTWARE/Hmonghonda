@@ -33,10 +33,41 @@ class InfoSparesController extends Controller
 
     public function actionQtt($id)
     {
-
+        $model1 = InfoSpares::model()->findByPk($id);
         Yii::app()->clientScript->scriptMap['*.js'] = false;
-        if (isset($_POST['InfoSpares'])) {
-            InfoSpares::model()->updateByPk($id, array('qautity' => (int) $_POST['InfoSpares']['qautity']));
+        if (isset($_POST['insert_last'])) {
+            // if ($model1->qautity < (int) $_POST['InfoSpares']['qautity']) {
+            $last_model = LastOldSpares::model()->findByAttributes(array('info_spares_id' => $model1->id));
+            if (!empty($last_model)) {
+
+                if ($_POST['insert_last'] == 1) {
+                    $last_model->last_qautity = (int) $_POST['qautity_new'] + $model1->qautity;
+                    $last_model->old_qautity = $model1->qautity;
+                    $last_model->number_come_old = $model1->number_come;
+                } else {
+                    $last_model->last_qautity = (int) $_POST['qautity_new'] + $last_model->old_qautity;
+                }
+                $last_model->save();
+            } else {
+                $last_model = new LastOldSpares();
+
+                if ($_POST['insert_last'] == 1) {
+                    $last_model->last_qautity = (int) $_POST['qautity_new'] + $model1->qautity;
+                    $last_model->old_qautity = $model1->qautity;
+                    $last_model->number_come_old = $model1->number_come;
+                } else {
+                    $last_model->last_qautity = (int) $_POST['qautity_new'] + $last_model->old_qautity;
+                    $last_model->old_qautity = 0;
+                    $last_model->number_come_old = $model1->number_come;
+                }
+                $last_model->info_spares_id = $model1->id;
+                $last_model->save();
+            }
+            if (isset($_POST['number_come'])) {
+                InfoSpares::model()->updateByPk($id, array('qautity' => $last_model->last_qautity, 'number_come' => $_POST['number_come']));
+            } else {
+                InfoSpares::model()->updateByPk($id, array('qautity' => $last_model->last_qautity));
+            }
             $this->redirect(array('index'));
         }
         $this->renderPartial('form_qtt', array(
@@ -197,21 +228,20 @@ class InfoSparesController extends Controller
             if ($model->car_or_spare_status_id == 2 && empty($model->branch_from_share)) {
                 Yii::app()->user->setFlash('error', "ກະ​ລຸ​ນາ​ເລືອກ​ສາ​ຂາ");
             } else {
-                if ($last_qautity > 0 && $model->qautity > $last_qautity) {
-                    $last_model = LastOldSpares::model()->findByAttributes(array('info_spares_id' => $model->id));
-                    if (!empty($last_model)) {
-                        $last_model->last_qautity = $model->qautity;
-                        $last_model->old_qautity = $last_qautity;
-                        $last_model->save();
-                    } else {
-                        $last_model = new LastOldSpares();
-                        $last_model->last_qautity = $model->qautity;
-                        $last_model->old_qautity = $last_qautity;
-                        $last_model->info_spares_id = $model->id;
-                        $last_model->save();
-                    }
-                }
-
+                /* if ($last_qautity > 0 && $model->qautity > $last_qautity) {
+                  $last_model = LastOldSpares::model()->findByAttributes(array('info_spares_id' => $model->id));
+                  if (!empty($last_model)) {
+                  $last_model->last_qautity = $model->qautity;
+                  $last_model->old_qautity = $last_qautity;
+                  $last_model->save();
+                  } else {
+                  $last_model = new LastOldSpares();
+                  $last_model->last_qautity = $model->qautity;
+                  $last_model->old_qautity = $last_qautity;
+                  $last_model->info_spares_id = $model->id;
+                  $last_model->save();
+                  }
+                  } */
                 if ($model->save()) {
                     if (isset(Yii::app()->session['admin_sale_branch'])) {
                         $this->redirect(array('index', 'branc_id' => Yii::app()->session['admin_sale_branch']));

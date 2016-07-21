@@ -79,6 +79,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                 <th style="white-space: nowrap">​ປະ​ເພດ​ລົດ</th>
                 <th style="white-space: nowrap">​ເລກ​ຈັກ</th>
                 <th style="white-space: nowrap">ເລ​ກ​ຖັງ</th>
+                <th style="white-space: nowrap">ລຸ້ນ​ລົດ</th>
                 <th style="white-space: nowrap">​ສີ​ລົດ</th>
                 <th style="white-space: nowrap">​ຈຳ​ນວນ</th>
                 <th style="white-space: nowrap">ຊື່​ລູກ​ຄ້າ</th>
@@ -146,13 +147,14 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                             <td><?= $car->carType->type_name ?></td>
                             <td><?= $car->car_code_1 ?></td>
                             <td><?= $car->car_code_2 ?></td>
+                            <td><?= $car->generation ?></td>
                             <td><?= $car->color ?></td>
                             <td>1</td>
 
                             <td style=" word-break: break-all;width: 400px;"><?php
-            $carsale = CarSale::model()->findByAttributes(array('infon_car_id' => $car->id));
-            echo $carsale->customer->first_name . $carsale->customer->first_name;
-                        ?></td>
+                                $carsale = CarSale::model()->findByAttributes(array('infon_car_id' => $car->id));
+                                echo $carsale->customer->first_name . $carsale->customer->first_name;
+                                ?></td>
                             <td>
                                 <?=
                                 CHtml::ajaxLink('LP', Yii::app()->createUrl("infonCar/runpai&id=$placardp->id&c=1"), array('update' => '#view', 'beforeSend' => 'function(){
@@ -166,7 +168,7 @@ $form = $this->beginWidget('bootstrap.widgets.BsActiveForm', array(
                     }
                     ?>
                     <tr>
-                        <td colspan="5"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
+                        <td colspan="6"><b>ລວມ​ຈຳ​ນວນ​ເງີນ</b></td>
                         <td><?= $i ?></td>
                     </tr>
                     <?php
