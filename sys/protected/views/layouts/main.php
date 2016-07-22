@@ -43,7 +43,9 @@
 
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-
+                            <li class="user user-menu">
+                                <a href="<?= Yii::app()->baseUrl ?>/index.php?r=site/rules"><span class="glyphicon glyphicon-user"></span>ກົດ​ລະ​ບຽບ</a>
+                            </li>
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="dist/img/Icon-user.png" class="user-image" alt="User Image">

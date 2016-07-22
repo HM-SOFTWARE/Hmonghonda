@@ -1,11 +1,13 @@
 <?php
 
-class SiteController extends Controller {
+class SiteController extends Controller
+{
 
     /**
      * Declares class-based actions.
      */
-    public function actions() {
+    public function actions()
+    {
         return array(
             // captcha action renders the CAPTCHA image displayed on the contact page
             'captcha' => array(
@@ -24,7 +26,8 @@ class SiteController extends Controller {
      * This is the default 'index' action that is invoked
      * when an action is not explicitly requested by users.
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         // renders the view file 'protected/views/site/index.php'
         // using the default layout 'protected/views/layouts/main.php'
         if (isset(Yii::app()->user->id)) {
@@ -36,10 +39,31 @@ class SiteController extends Controller {
         }
     }
 
+    public function actionRules()
+    {
+        if (isset(Yii::app()->user->id)) {
+            if (isset($_POST['text'])) {
+                $data = $_POST['text'] . "\n";
+                $ret = file_put_contents(Yii::app()->basePath . "/../../rules.txt", $data);
+                if ($ret === false) {
+                    die('There was an error writing this file');
+                } else {
+                    echo "$ret bytes written to file";
+                }
+            }
+            $_SESSION['type_user'] = User::model()->findByPk(Yii::app()->user->id)->user_type;
+            $_SESSION['user_id'] = Yii::app()->user->id;
+            $this->render('rules');
+        } else {
+            $this->redirect(array('site/login'));
+        }
+    }
+
     /**
      * This is the action to handle external exceptions.
      */
-    public function actionError() {
+    public function actionError()
+    {
         if ($error = Yii::app()->errorHandler->error) {
             if (Yii::app()->request->isAjaxRequest)
                 echo $error['message'];
@@ -51,7 +75,8 @@ class SiteController extends Controller {
     /**
      * Displays the contact page
      */
-    public function actionContact() {
+    public function actionContact()
+    {
         $model = new ContactForm;
         if (isset($_POST['ContactForm'])) {
             $model->attributes = $_POST['ContactForm'];
@@ -74,7 +99,8 @@ class SiteController extends Controller {
     /**
      * Displays the login page
      */
-    public function actionLogin() {
+    public function actionLogin()
+    {
         $model = new LoginForm;
 
         // if it is ajax validation request
@@ -97,7 +123,8 @@ class SiteController extends Controller {
     /**
      * Logs out the current user and redirect to homepage.
      */
-    public function actionLogout() {
+    public function actionLogout()
+    {
         Yii::app()->user->logout();
         $this->redirect(Yii::app()->homeUrl);
     }

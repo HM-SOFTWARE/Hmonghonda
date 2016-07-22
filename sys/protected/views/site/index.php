@@ -9,23 +9,23 @@ if (!empty($bgs)) {
         $i++;
         if ($i == 1) {
             ?>
-                                                                                                    .crossfade > figure:nth-child(1) {
-                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
-                                                                                                    }
+                                                                                                                                                                                                                                                    .crossfade > figure:nth-child(1) {
+                                                                                                                                                                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
+                                                                                                                                                                                                                                                    }
             <?php
         } elseif ($i == 2) {
             ?>
-                                                                                                    .crossfade > figure:nth-child(2) {
-                                                                                                        animation-delay:6s;
-                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
-                                                                                                    }
+                                                                                                                                                                                                                                                    .crossfade > figure:nth-child(2) {
+                                                                                                                                                                                                                                                        animation-delay:6s;
+                                                                                                                                                                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
+                                                                                                                                                                                                                                                    }
             <?php
         } else {
             ?>
-                                                                                                    .crossfade > figure:nth-child(<?= $i ?>) {
-                                                                                                        animation-delay:<?= 6 * ($i - 1) ?>s;
-                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
-                                                                                                    }
+                                                                                                                                                                                                                                                    .crossfade > figure:nth-child(<?= $i ?>) {
+                                                                                                                                                                                                                                                        animation-delay:<?= 6 * ($i - 1) ?>s;
+                                                                                                                                                                                                                                                        background-image: url('<?= Yii::app()->baseUrl ?>/images/<?= $bg->photo ?>');
+                                                                                                                                                                                                                                                    }
             <?php
         }
     }
@@ -38,7 +38,7 @@ $bgs = Bg::model()->findAll();
 if (!empty($bgs)) {
     foreach ($bgs as $bg) {
         ?>
-                                                                    <figure></figure>
+                                                                                                                                                                    <figure></figure>
         <?php
     }
 }
