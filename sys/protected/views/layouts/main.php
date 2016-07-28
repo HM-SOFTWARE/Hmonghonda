@@ -40,12 +40,13 @@
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">Toggle navigation</span>
                     </a>
-
+                    <ul class="nav navbar-nav">
+                        <li class="user user-menu">
+                            <a  href="<?= Yii::app()->baseUrl ?>/index.php?r=site/rules"><span class="glyphicon glyphicon-user"></span><span style="color: #fff; font-size: 18px;"><b>ກົດ​ລະ​ບຽບ</b></span></a>
+                        </li>
+                    </ul>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="user user-menu">
-                                <a href="<?= Yii::app()->baseUrl ?>/index.php?r=site/rules"><span class="glyphicon glyphicon-user"></span>ກົດ​ລະ​ບຽບ</a>
-                            </li>
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="dist/img/Icon-user.png" class="user-image" alt="User Image">

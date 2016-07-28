@@ -57,6 +57,11 @@
                         ),
                     ),
                 ));
+                $g = Giveaway::model()->findByAttributes(array('customer_id' => $model->id));
+                if (!empty($g)) {
+                    echo"<b>ຂອງ​ແຖມ</b><br/>";
+                    echo nl2br($g->giveaway);
+                }
                 ?>
             </div>
         </div>

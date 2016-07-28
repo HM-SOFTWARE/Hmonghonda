@@ -16,7 +16,7 @@ if (Yii::app()->user->checkAccess('Admin')) {
     <?php
 }
 ?>
-<div >
+<div style="font-size: 18px;" >
     <b>ລາຍ​ລະ​ອຽດ​ກົດ​ລະ​ບຽບ</b><br/>
     <?php
     echo nl2br(fread($myfile2, filesize(Yii::app()->basePath . "/../../rules.txt")));
